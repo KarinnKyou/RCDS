@@ -20,6 +20,32 @@ into hard spatial constraints, and the AGV fleet re-plans around them in real ti
 - **Operator console** — live KPIs, reschedule log, task queue, alert feed and
   per-vehicle detail.
 
+## Screenshots
+
+Idle state after the launcher starts (5 AGVs, 100 tasks). The right-hand rail
+carries the simulation controls, the six risk injections and the model-service
+panel; the bottom dock holds the reschedule log and the task queue.
+
+![Overview](docs/screenshots/01-overview.png)
+
+Three risks injected at once — traffic congestion, personnel intrusion and fire.
+All five vehicles are paused by the intrusion while the congestion blocks the
+waypoints in its radius, and the reschedule log records the evidence of every
+decision (`Risk injected`, `Path blocked by risk · A* replan`, head-on yielding).
+
+![Risk linkage](docs/screenshots/02-risk-linkage.png)
+
+Clicking a vehicle opens its detail: status, battery, distance, current task,
+waypoint and target, remaining A\* path, and the vehicle event log.
+
+![Vehicle detail](docs/screenshots/03-vehicle-detail.png)
+
+The 2D viewport renders the same state as a top-down road-network map. Planned
+paths (solid) and travelled trails (dashed) are drawn for every vehicle at all
+times, with the blocked congestion area, risk markers and a legend.
+
+![2D map](docs/screenshots/04-2d-map.png)
+
 ## Risk semantics
 
 | Risk | Scheduling action |
@@ -136,3 +162,8 @@ by about 7 %, because zig-zag routes are also longer routes.
 - The intrusion pause is zone-wide rather than lane-accurate.
 - The 2D map is read-only with a fixed aspect ratio (no pan or zoom).
 - Decommissioned AGVs are never revived within a run.
+- Battery level is informational: a vehicle at 0 % keeps working.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
