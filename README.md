@@ -59,17 +59,36 @@ times, with the blocked congestion area, risk markers and a legend.
 
 ## Quick start
 
-```bash
-python run.py                         # launcher: backend + frontend, opens the browser
-python run.py online                  # backend only (WebSocket on :8000)
-python run.py sim  -n 4 --tasks 20    # headless simulation, no risks
-python run.py risk -n 4 --tasks 20    # headless run of the full risk scenario
+The back end has a single third-party dependency, so a dedicated virtual
+environment stays tiny (Python 3.13 + `websockets` = two packages).
+
+```powershell
+# 1. Python environment (Windows)
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install websockets
+
+# 2. Frontend dependencies (installed into frontend/node_modules)
+cd frontend; npm install; cd ..
+
+# 3. Run
+.\.venv\Scripts\python.exe run.py                    # launcher: backend + frontend, opens the browser
+.\.venv\Scripts\python.exe run.py online             # backend only (WebSocket on :8000)
+.\.venv\Scripts\python.exe run.py sim  -n 4 --tasks 20    # headless simulation, no risks
+.\.venv\Scripts\python.exe run.py risk -n 4 --tasks 20    # headless run of the full risk scenario
 ```
+
+On macOS or Linux use `.venv/bin/python` instead of `.venv\Scripts\python.exe`
+(or activate the environment and call `python`).
+
+`run.py` starts the back end with `sys.executable`, so anything launched from the
+virtual environment stays inside it. The launcher also works with a plain system
+Python if you would rather not use a virtual environment.
+
+`requirements.txt` declares the same single dependency (`websockets>=12.0`) if you
+prefer `pip install -r requirements.txt`. Node.js 18+ is needed for the frontend.
 
 Defaults are 5 AGVs and 100 tasks; `-n` and `--tasks` override them.
 
-Requirements: Python 3.10+ with `websockets` (`pip install -r requirements.txt`)
-and Node.js 18+ for the frontend (`npm install` inside `frontend/`).
 
 ## Layout
 
@@ -127,10 +146,14 @@ Measured: 100 tasks leave the fleet at 99.0 %, 1 000 tasks at 90.0 %, and a full
 
 ## Verification
 
-```bash
-python tests/test_kernel.py            # kernel assertions
-python tests/ws_e2e.py --port 8000     # protocol, clock, risk injection, reroute evidence
+```powershell
+.\.venv\Scripts\python.exe tests\test_kernel.py            # kernel assertions
+.\.venv\Scripts\python.exe tests\ws_e2e.py --port 8000     # protocol, clock, risk injection, reroute evidence
 ```
+
+The end-to-end suite needs a running back end (`run.py online` in another
+terminal). Both suites are green inside the virtual environment: 145 kernel
+assertions and 56 protocol assertions.
 
 The kernel tests walk a full run tick by tick and assert the two invariants above
 on every single step, in addition to graph, risk-ledger, linkage and turn-cost
